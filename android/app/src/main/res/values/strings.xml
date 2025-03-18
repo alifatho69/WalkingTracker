@@ -1,3 +1,7 @@
 <resources>
+<<<<<<< HEAD
     <string name="app_name">WalkingTracker</string>
+=======
+    <string name="app_name">walkingtracker</string>
+>>>>>>> d96ef06 ([BAB 2] KOMPONEN REACT NATIVE DAN TEXT HANDLING)
 </resources>

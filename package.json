@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
   "name": "WalkingTracker",
+=======
+  "name": "walkingtracker",
+>>>>>>> d96ef06 ([BAB 2] KOMPONEN REACT NATIVE DAN TEXT HANDLING)
   "version": "0.0.1",
   "private": true,
   "scripts": {
