@@ -4,14 +4,17 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
+    "alif": "adb devices | findstr emulator || start D:/Code/Android/Sdk/emulator/emulator -avd Pixel_API_35 && npx react-native run-android",
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest"
   },
   "dependencies": {
+    "iconsax-react-native": "^0.0.8",
     "react": "19.0.0",
-    "react-native": "0.78.0"
+    "react-native": "0.78.0",
+    "react-native-svg": "^15.11.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
