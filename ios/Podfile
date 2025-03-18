@@ -14,7 +14,11 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
+<<<<<<< HEAD
 target 'WalkingTracker' do
+=======
+target 'walkingtracker' do
+>>>>>>> d96ef06 ([BAB 2] KOMPONEN REACT NATIVE DAN TEXT HANDLING)
   config = use_native_modules!
 
   use_react_native!(
