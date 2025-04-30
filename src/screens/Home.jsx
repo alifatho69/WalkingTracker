@@ -1,9 +1,11 @@
 import React from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
+import NavbarButton from "react-native-navbar/NavbarButton";
 
 export default function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
+      <NavbarButton />
       <Text style={styles.title}>WalkingTracker</Text>
       <Button title="Lihat Progress" onPress={() => navigation.navigate("Progress")} />
       <Button title="Baca Blog" onPress={() => navigation.navigate("Blog")} />
