@@ -1,11 +1,22 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet, Alert, ScrollView } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Animated, View, Text, TextInput, Button, StyleSheet, Alert, ScrollView } from "react-native";
 
 export default function FormScreen({ navigation }) {
   const [activity, setActivity] = useState("");
   const [distance, setDistance] = useState("");
   const [cerita, setCerita] = useState("");
   const [dataList, setDataList] = useState([]); // Menyimpan data aktivitas
+
+  const fadeAnim = useState(new Animated.Value(0))[0]; // nilai awal opacity: 0
+  // Jalankan animasi saat komponen tampil
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,             // Akhir opacity: 1
+      duration: 800,          // Durasi animasi: 800ms
+      useNativeDriver: true,  // Optimasi animasi
+    }).start();
+  }, []);
+
 
   const handleSubmit = () => {
     if (activity && distance) {
@@ -27,7 +38,9 @@ export default function FormScreen({ navigation }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Diary Kegiatan Olahraga</Text>
+    <Animated.View style={{ opacity: fadeAnim }}>
+      {/* Semuanya dibungkus */}
+      <Text style={styles.title}>Tambah Aktivitas Jalan</Text>
       <TextInput
         style={styles.input}
         placeholder="Jenis Aktivitas"
@@ -43,21 +56,22 @@ export default function FormScreen({ navigation }) {
       />
       <TextInput
         style={styles.input}
-        placeholder="Isi ceritamu"
+        placeholder="Cerita Aktivitas"
         value={cerita}
         onChangeText={setCerita}
       />
       <Button title="Simpan Data" onPress={handleSubmit} />
+    </Animated.View>
 
-      <Text style={styles.subtitle}>Daftar Aktivitas</Text>
-      {dataList.map((item) => (
-        <View key={item.id} style={styles.card}>
-          <Text>Aktivitas: {item.activity}</Text>
-          <Text>Jarak: {item.distance} km</Text>
-          <Text>Jarak: {item.cerita} km</Text>
-        </View>
-      ))}
-    </ScrollView>
+    <Text style={styles.subtitle}>Daftar Aktivitas</Text>
+    {dataList.map((item) => (
+      <Animated.View key={item.id} style={styles.card}>
+        <Text>Aktivitas: {item.activity}</Text>
+        <Text>Jarak: {item.distance} km</Text>
+        <Text>Jarak: {item.cerita} km</Text>
+      </Animated.View>
+    ))}
+  </ScrollView>
   );
 }
 

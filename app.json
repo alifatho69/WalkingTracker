@@ -26,6 +26,11 @@
     },
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "exclude": ["react-native-vector-icons"]
+      }
+    }
   }
 }

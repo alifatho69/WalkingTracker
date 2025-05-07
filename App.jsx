@@ -3,6 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
+
 // Screens
 import HomeScreen from "./src/screens/Home";
 import ProgressScreen from "./src/screens/Progress";
@@ -20,7 +21,7 @@ function TabNavigator() {
           if (route.name === "Home") iconName = "home";
           else if (route.name === "Progress") iconName = "bar-chart";
           else if (route.name === "Blog") iconName = "book";
-          else if (route.name === "Form") iconName = "paper";
+          else if (route.name === "Form") iconName = "add-circle";
           return <Ionicons name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: "#2e8b57",

@@ -1,15 +1,27 @@
-import React from "react";
-import { View, Text, Button, StyleSheet } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { View, Text, Button, StyleSheet, Animated } from "react-native";
 import NavbarButton from "react-native-navbar/NavbarButton";
 
 export default function HomeScreen({ navigation }) {
+  const fadeAnim = useRef(new Animated.Value(0)).current; // inisialisasi nilai awal opacity: 0
+  
+  // Jalankan animasi saat komponen tampil
+  // Gunakan useRef untuk menyimpan nilai animasi agar tidak di-reset setiap render
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1, // Opacity
+      duration: 1000, // Durasi Animasi: 1000ms
+      useNativeDriver: true, // Biar gak lag
+    }).start();
+  }, [fadeAnim]);
+
   return (
-    <View style={styles.container}>
+    <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
       <NavbarButton />
       <Text style={styles.title}>WalkingTracker</Text>
       <Button title="Lihat Progress" onPress={() => navigation.navigate("Progress")} />
       <Button title="Baca Blog" onPress={() => navigation.navigate("Blog")} />
-    </View>
+    </Animated.View>
   );
 }
 
