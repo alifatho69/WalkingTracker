@@ -8,7 +8,7 @@ import { Ionicons } from "@expo/vector-icons";
 import HomeScreen from "./src/screens/Home";
 import ProgressScreen from "./src/screens/Progress";
 import BlogScreen from "./src/screens/Blog";
-import FormScreen from "./src/screens/Form";
+import CeritaScreen from "./src/screens/Cerita";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 // Tab Navigator berisi Home, Progress, Blog
@@ -21,7 +21,7 @@ function TabNavigator() {
           if (route.name === "Home") iconName = "home";
           else if (route.name === "Progress") iconName = "bar-chart";
           else if (route.name === "Blog") iconName = "book";
-          else if (route.name === "Form") iconName = "add-circle";
+          else if (route.name === "Ceritaku") iconName = "add-circle";
           return <Ionicons name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: "#2e8b57",
@@ -31,7 +31,7 @@ function TabNavigator() {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Progress" component={ProgressScreen} />
       <Tab.Screen name="Blog" component={BlogScreen} />
-      <Tab.Screen name="Form" component={FormScreen} />
+      <Tab.Screen name="Ceritaku" component={CeritaScreen} />
     </Tab.Navigator>
   );
 }
@@ -41,7 +41,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Main" component={TabNavigator} />
-        <Stack.Screen name="Form" component={FormScreen} />
+        <Stack.Screen name="Ceritaku" component={CeritaScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
