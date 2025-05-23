@@ -16,10 +16,12 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.namamu.walkingtracker",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "374785937977",
+    "project_id": "wocoapp-43186",
+    "storage_bucket": "wocoapp-43186.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:374785937977:android:a4a7bd7885cf867c8af3e8",
+        "android_client_info": {
+          "package_name": "com.namamu.walkingtracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhjZGoHteBVhj9vFpGzX5MN5VgCxZf9J0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,185 +1,136 @@
 import { useState, useEffect } from "react";
-import { Animated, View, Text, TextInput, Button, StyleSheet, Alert, ScrollView } from "react-native";
+import {
+  View, Text, TextInput, Button, StyleSheet, Alert, ScrollView, Animated,
+} from "react-native";
+import {
+  collection, addDoc, getDocs, updateDoc, deleteDoc, doc,
+} from "firebase/firestore";
+import { db } from "../firebase"; // pastikan path ke firebase.js benar
 
-export default function CeritaScreen({ navigation }) {
+export default function CeritaScreen() {
   const [nama, setNama] = useState("");
   const [activity, setActivity] = useState("");
   const [distance, setDistance] = useState("");
   const [cerita, setCerita] = useState("");
-  const [dataList, setDataList] = useState([]); // Menyimpan data aktivitas
+  const [dataList, setDataList] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState(null);
 
-  
-  const fadeAnim = useState(new Animated.Value(0))[0]; // nilai awal opacity: 0
-  // Jalankan animasi saat komponen tampil
+  const fadeAnim = useState(new Animated.Value(0))[0];
+
   useEffect(() => {
     Animated.timing(fadeAnim, {
-      toValue: 1,             // Akhir opacity: 1
-      duration: 800,          // Durasi animasi: 800ms
-      useNativeDriver: true,  // Optimasi animasi
+      toValue: 1,
+      duration: 800,
+      useNativeDriver: true,
     }).start();
 
     fetchData();
   }, []);
 
+  const fetchData = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "ceritaku"));
+      const data = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setDataList(data);
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    }
+  };
 
   const handleSubmit = async () => {
-  if (activity && distance && cerita) {
-    const newData = {
-      nama: nama,
+    if (!nama || !activity || !distance || !cerita) {
+      Alert.alert("Error", "Semua field harus diisi!");
+      return;
+    }
+
+    const docData = {
+      nama,
       jenis_aktifitas: activity,
       target: parseFloat(distance),
       cerita_hari_ini: cerita,
       createAt: new Date().toISOString(),
     };
 
-    try {
-      const response = await fetch("https://6820a535259dad2655ad281a.mockapi.io/ceritaku/tb_ceritaku", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newData),
-      });
-
-      const savedData = await response.json();
-      setDataList([...dataList, savedData]); // Tambah ke list dari response API
-      setActivity("");
-      setDistance("");
-      setCerita("");
-      Alert.alert("Sukses", "Data berhasil dikirim ke server!");
-    } catch (error) {
-      Alert.alert("Gagal", "Terjadi kesalahan saat mengirim data.");
-      console.error("Submit Error:", error);
+    if (isEditing) {
+      try {
+        const docRef = doc(db, "ceritaku", editingId);
+        await updateDoc(docRef, docData);
+        Alert.alert("Berhasil", "Data berhasil diupdate!");
+        resetForm();
+        fetchData();
+      } catch (err) {
+        Alert.alert("Error", "Gagal update data.");
+      }
+    } else {
+      try {
+        await addDoc(collection(db, "ceritaku"), docData);
+        Alert.alert("Berhasil", "Data berhasil disimpan!");
+        resetForm();
+        fetchData();
+      } catch (err) {
+        Alert.alert("Error", "Gagal menyimpan data.");
+      }
     }
-  } else {
-    Alert.alert("Error", "Semua field harus diisi!");
-  }
-};
-
-const fetchData = async () => {
-  try {
-    const response = await fetch("https://6820a535259dad2655ad281a.mockapi.io/ceritaku/tb_ceritaku");
-    const result = await response.json();
-    setDataList(result);
-  } catch (error) {
-    console.error("Fetch Error:", error);
-  }
-};
-
-const startEdit = (item) => {
-  setIsEditing(true);
-  setEditingId(item.id);
-  setActivity(item.jenis_aktifitas);
-  setDistance(String(item.target));
-  setCerita(item.cerita_hari_ini);
-  setNama(item.nama);
-};
-
-const handleUpdate = async () => {
-  const updatedData = {
-    nama,
-    jenis_aktifitas: activity,
-    target: parseFloat(distance),
-    cerita_hari_ini: cerita,
-    createAt: new Date().toISOString(),
   };
 
-  try {
-    const response = await fetch(`https://6820a535259dad2655ad281a.mockapi.io/ceritaku/tb_ceritaku/${editingId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedData),
-    });
+  const startEdit = (item) => {
+    setIsEditing(true);
+    setEditingId(item.id);
+    setNama(item.nama);
+    setActivity(item.jenis_aktifitas);
+    setDistance(String(item.target));
+    setCerita(item.cerita_hari_ini);
+  };
 
-    const result = await response.json();
-    setDataList(dataList.map((item) => (item.id === editingId ? result : item)));
-    resetForm();
-    Alert.alert("Berhasil", "Data berhasil diupdate!");
-  } catch (err) {
-    Alert.alert("Error", "Gagal update data.");
-  }
-};
+  const handleDelete = async (id) => {
+    try {
+      await deleteDoc(doc(db, "ceritaku", id));
+      Alert.alert("Berhasil", "Data berhasil dihapus.");
+      fetchData();
+    } catch (err) {
+      Alert.alert("Error", "Gagal hapus data.");
+    }
+  };
 
-const handleDelete = async (id) => {
-  try {
-    await fetch(`https://6820a535259dad2655ad281a.mockapi.io/ceritaku/tb_ceritaku/${id}`, {
-      method: "DELETE",
-    });
-    setDataList(dataList.filter((item) => item.id !== id));
-    Alert.alert("Dihapus", "Data berhasil dihapus.");
-  } catch (err) {
-    Alert.alert("Error", "Gagal hapus data.");
-  }
-};
-
-const resetForm = () => {
-  setNama("");
-  setActivity("");
-  setDistance("");
-  setCerita("");
-  setIsEditing(false);
-  setEditingId(null);
-};
-
-
-
-
-
+  const resetForm = () => {
+    setNama("");
+    setActivity("");
+    setDistance("");
+    setCerita("");
+    setIsEditing(false);
+    setEditingId(null);
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-    <Animated.View style={{ opacity: fadeAnim }}>
-      {/* Semuanya dibungkus */}
-      <Text style={styles.title}>Tambah Aktivitas Jalan</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Nama"
-          value={nama}
-          onChangeText={setNama}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Jenis Aktivitas"
-          value={activity}
-          onChangeText={setActivity}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Jarak (km)"
-          value={distance}
-          keyboardType="numeric"
-          onChangeText={setDistance}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Cerita Aktivitas"
-          value={cerita}
-          onChangeText={setCerita}
-        />
-        <Button
-          title={isEditing ? "Update Data" : "Simpan Data"}
-          onPress={handleSubmit}
-        />
+      <Animated.View style={{ opacity: fadeAnim }}>
+        <Text style={styles.title}>Tambah Cerita Aktivitas Jalan</Text>
+        <TextInput style={styles.input} placeholder="Nama" value={nama} onChangeText={setNama} />
+        <TextInput style={styles.input} placeholder="Jenis Aktivitas" value={activity} onChangeText={setActivity} />
+        <TextInput style={styles.input} placeholder="Target (km)" value={distance} keyboardType="numeric" onChangeText={setDistance} />
+        <TextInput style={styles.input} placeholder="Cerita Hari Ini" value={cerita} onChangeText={setCerita} />
+        <Button title={isEditing ? "Update Data" : "Simpan Data"} onPress={handleSubmit} />
+      </Animated.View>
 
-    </Animated.View>
-
-    <Text style={styles.subtitle}>Daftar Aktivitas</Text>
-    {dataList.map((item) => (
+      <Text style={styles.subtitle}>Daftar Cerita</Text>
+      {dataList.map((item) => (
         <Animated.View key={item.id} style={styles.card}>
           <Text>Nama: {item.nama}</Text>
           <Text>Aktivitas: {item.jenis_aktifitas}</Text>
           <Text>Target: {item.target} km</Text>
           <Text>Cerita: {item.cerita_hari_ini}</Text>
+          <Text>Tanggal: {new Date(item.createAt).toLocaleDateString()}</Text>
           <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
             <Button title="Edit" onPress={() => startEdit(item)} />
             <Button title="Hapus" color="red" onPress={() => handleDelete(item.id)} />
           </View>
         </Animated.View>
       ))}
-
-  </ScrollView>
+    </ScrollView>
   );
 }
 
