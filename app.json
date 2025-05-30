@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "WalkingTracker",
+    "scheme": "WalkingTracker",
     "slug": "WalkingTracker",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -27,11 +28,24 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-font"
+      "expo-font",
+      [
+        "expo-dev-client",
+        {
+          "launchMode": "most-recent"
+        }
+      ]
     ],
     "doctor": {
       "reactNativeDirectoryCheck": {
-        "exclude": ["react-native-vector-icons"]
+        "exclude": [
+          "react-native-vector-icons"
+        ]
+      }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ddc9b5cc-d138-44f1-bf28-8f94523f9fd2"
       }
     }
   }

@@ -1,11 +1,22 @@
+import * as DevClient from 'expo-dev-client';
+import * as Notifications from 'expo-notifications';
 import { useState, useEffect } from "react";
 import {
-  View, Text, TextInput, Button, StyleSheet, Alert, ScrollView, Animated,
+  View, Text, TextInput, Button, StyleSheet, Alert, ScrollView, Animated, Platform
 } from "react-native";
 import {
   collection, addDoc, getDocs, updateDoc, deleteDoc, doc,
 } from "firebase/firestore";
 import { db } from "../firebase"; // pastikan path ke firebase.js benar
+import { globalPushToken } from "../../App";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 export default function CeritaScreen() {
   const [nama, setNama] = useState("");
@@ -26,7 +37,31 @@ export default function CeritaScreen() {
     }).start();
 
     fetchData();
+
+    async function getPermissions() {
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Izin notifikasi ditolak!');
+      }
+    }
+
+    if (Platform.OS !== 'web') {
+      getPermissions();
+    }
   }, []);
+
+  // Tambahkan fungsi ini
+  async function sendLocalNotification(namaUser) {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Aktivitas Baru Ditambahkan 🚶",
+        body: `Halo ${namaUser}, data ceritamu berhasil disimpan!`,
+        sound: "default",
+      },
+      trigger: null, // segera tampil
+    });
+  }
+
 
   const fetchData = async () => {
     try {
@@ -55,27 +90,27 @@ export default function CeritaScreen() {
       createAt: new Date().toISOString(),
     };
 
-    if (isEditing) {
-      try {
+    try {
+      if (isEditing) {
+        // Update dokumen yang sudah ada
         const docRef = doc(db, "ceritaku", editingId);
         await updateDoc(docRef, docData);
-        Alert.alert("Berhasil", "Data berhasil diupdate!");
-        resetForm();
-        fetchData();
-      } catch (err) {
-        Alert.alert("Error", "Gagal update data.");
-      }
-    } else {
-      try {
+      } else {
+        // Tambah dokumen baru
         await addDoc(collection(db, "ceritaku"), docData);
-        Alert.alert("Berhasil", "Data berhasil disimpan!");
-        resetForm();
-        fetchData();
-      } catch (err) {
-        Alert.alert("Error", "Gagal menyimpan data.");
       }
+
+      Alert.alert("Berhasil", "Data berhasil disimpan!");
+      await sendLocalNotification(nama); // Notifikasi muncul tiap berhasil simpan
+      resetForm();
+      fetchData();
+
+    } catch (err) {
+      Alert.alert("Error", "Gagal menyimpan data.");
+      console.error("HandleSubmit error:", err);
     }
   };
+
 
   const startEdit = (item) => {
     setIsEditing(true);
