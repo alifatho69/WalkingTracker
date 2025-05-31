@@ -50,7 +50,7 @@ export default function HomeScreen({ navigation }) {
   async function kirimNotifikasiLokal() {
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: "Halo! 👋",
+        title: "Halo user !!! 👋",
         body: "Jangan lupa update aktivitas jalanmu hari ini!",
         sound: "default",
       },

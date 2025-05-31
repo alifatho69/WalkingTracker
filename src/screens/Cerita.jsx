@@ -55,7 +55,7 @@ export default function CeritaScreen() {
     await Notifications.scheduleNotificationAsync({
       content: {
         title: "Aktivitas Baru Ditambahkan 🚶",
-        body: `Halo ${namaUser}, data ceritamu berhasil disimpan!`,
+        body: `Halo ${namaUser}, data ceritamu berhasil disimpan!!!!`,
         sound: "default",
       },
       trigger: null, // segera tampil
