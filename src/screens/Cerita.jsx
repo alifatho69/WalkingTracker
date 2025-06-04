@@ -41,7 +41,7 @@ export default function CeritaScreen() {
     async function getPermissions() {
       const { status } = await Notifications.requestPermissionsAsync();
       if (status !== 'granted') {
-        alert('Izin notifikasi ditolak!');
+        alert('Waduhhh Izin notifikasi ditolak! 🗿🗿');
       }
     }
 
@@ -55,7 +55,7 @@ export default function CeritaScreen() {
     await Notifications.scheduleNotificationAsync({
       content: {
         title: "Aktivitas Baru Ditambahkan 🚶",
-        body: `Halo ${namaUser}, data ceritamu berhasil disimpan!!!!`,
+        body: `✅ Halo ${namaUser}, data ceritamu berhasil disimpan!!!!`,
         sound: "default",
       },
       trigger: null, // segera tampil
